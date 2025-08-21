@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        nav{
+            background-color: blueviolet;
+            padding: 20px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart{
+            position: relative;
+        }
+        .cart b{
+            position: absolute;
+            top: -20px;
+            right: 5px;
+            background-color: red;
+            width: 70%;
+            max-width: 100px;
+            text-align: center;
+            display: inline-block;
+            border-radius: 60%;
+        }
+
+        .bounce{
+            animation-name:anim ;
+            animation-duration: 1s ;
+            animation-timing-function: linear;
+            animation-iteration-count: 1;
+        }
+        @keyframes anim {
+            0%{
+                transform: translateY(-5px);
+            }
+            25%{
+                transform: translateY(0px);
+            }
+            50%{
+                transform: translateY(-3px);
+            }
+            100%{
+                transform: translateY(0px);
+            }
+            
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <b>E-Shop</b>
+            <div class="cart">
+                <b class="item-count">0</b>
+                <i class="fa-solid fa-cart-shopping fa-xl"></i>
+            </div>
+        </nav>
+        <button>add to cart</button>
+    </header>
+
+    <script>
+        let count=0;
+       document.addEventListener("click", () => {
+  let item = document.querySelector(".item-count");
+  item.innerHTML=100;
+  item.classList.remove("bounce"); // reset animation
+  void item.offsetWidth;            // trigger reflow (important!)
+  item.classList.add("bounce");     // re-add animation
+});
+
+    </script>
+</body>
+</html>
