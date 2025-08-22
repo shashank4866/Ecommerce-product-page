@@ -1,0 +1,289 @@
+*{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+   
+}
+        body{
+            background-color: #1B3C53;
+            position: relative;
+        }
+
+        nav{
+            position: sticky; 
+            top: 0; 
+            z-index: 50;
+            padding: 20px;
+            background: #1B3C53;
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #494e6c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .inputwith-icons{
+            display: flex;
+            align-items: center;
+            /* justify-content: space-evenly; */
+            color: #fff;
+            gap: 10px;
+            /* width: 80%; */
+        }
+
+        .inputwith-icons input,select{
+            border-radius: 4px;
+            padding: 5px;
+            outline: none;
+            border: none;
+        }
+
+        main{
+            margin-top: 10px;
+        }
+       .products-container {
+        width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      /* background:#0c4e7d; */
+      /* padding: 20px; */
+      border-radius: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+    background-color: rgb(84, 84, 125);
+    width: 100%;
+      
+      border-radius: 8px 8px 0px 0px;
+    }
+
+    .card h3 {
+      margin: 15px 0 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .card-btns-title{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        color: #fff;
+    }
+    .card-btns-title p,button{
+        color: #fff;
+        font-size: 1rem;
+
+    }
+    .card-btns-title button{
+        border-radius: 10px;
+        border: none;
+        padding: 10px;
+    }
+    .add-to-cart{
+        background-color: green;
+        border-radius: 10px;
+        border: none;
+        padding: 10px;
+    }
+    
+    .card-btns-title button:nth-of-type(2){
+        background-color: rgb(48, 66, 72);
+    }
+
+    .price-ratings{
+        display: flex;
+        justify-content: space-evenly;
+    }
+    .item-count{
+        background-color: red;
+        border-radius: 50%;
+        text-align: center;
+    }
+
+    .popup{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.132);
+        backdrop-filter: blur(20px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        
+    }
+
+    .popupchild{
+        position: fixed;
+        width: 90%;
+        height: 550px;
+        background-color:#1b3c53;
+        top: 0;
+        left: 0;
+        transform: translate(5%,20%);
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        padding: 2em;
+        overflow-y: scroll;
+        z-index: 999;
+         scrollbar-width: thin;          /* auto | thin | none */
+    scrollbar-color: #007bff #f1f1f100; /* thumb | track */
+    
+    }
+    .cnlbtn{
+        position: absolute;
+        right: 0;
+        top: 100px;
+        background-color: red;
+        z-index: 999;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 30px;
+    }
+    .popup-title{
+        text-align: right;
+    }
+
+    .popup-price{
+        display: flex;
+        gap: 25%;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+
+    }
+    .popup-price b:nth-of-type(2){
+        color:goldenrod;
+    }
+
+    .reviews{
+        width: 100%;
+        border: 1px solid gray;
+        border-radius: 10px;
+        padding: 5px;
+    }
+    .review-item{
+        width: 100%;
+        padding: 3px;
+        border: 1px solid gray;
+        display: flex;
+        flex-direction: column;
+
+    }
+    .profile{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .slider-cart{
+        width: 60%;
+        height: 600px;
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        position: fixed;
+        background-color: #1B3C53;
+        top: 100px;
+        right: 0;
+        z-index: 1000;
+        overflow-y: scroll;
+        scrollbar-width: thin;          /* auto | thin | none */
+    scrollbar-color: #007bff #f1f1f100; /* thumb | track */
+
+    }
+
+    .cart-img{
+        width: 50%;
+    }
+
+    .cart-item-container{
+        border: 1px solid gray;
+        display: flex;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .formPay {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 350px;
+      position: fixed;
+      top: 10px;
+      z-index: 1111;
+    }
+
+    .payment-container h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0,123,255,0.4);
+    }
+
+    .pay-btn {
+      width: 100%;
+      background: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .pay-btn:hover {
+      background: #0056b3;
+    }
+
+    .amount-display {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #28a745;
+    }
