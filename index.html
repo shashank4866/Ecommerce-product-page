@@ -9,28 +9,50 @@
     <title>Document</title>
 </head>
 <body>
+  <header>
     <nav>
-        <div class="logo-container">
-            <img src="" alt="logo">
+        <div class="logo">Logo</div>
+        <div class="search-bar">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search...">
         </div>
-        <div class="inputwith-icons">
-            <input type="text">
-        <select name="" id="">
-            <option value="All">All</option>
-        </select>
-        <span class="material-symbols-outlined">account_circle</span>
-        <div class="cartitemcount">
-            <p class="item-count">0</p>
-            <span class="material-symbols-outlined cart-view">add_shopping_cart</span>
-        </div>
-
+        <div class="nav-icons">
+            <p class="cart-count" style="color: #fff; background-color: red; border-radius: 50%; width:20px;text-align: center;">0</p>
+            <span class="material-symbols-outlined cart-icon">shopping_cart_checkout</span>
+            <!-- <span class="material-symbols-outlined">notifications</span>
+            <span class="material-symbols-outlined">settings</span> -->
+            <span class="material-symbols-outlined">account_circle</span>
         </div>
     </nav>
-    <main>
-        <section class="products-container">
+  </header>
 
-        </section>
-    </main>
+  <main>
+    <section class="product-display">
+    </section>
+
+    <section class="addToCart-conatiner">
+        <h2>Cart Items</h2>
+        <span class="material-symbols-outlined cart-close">arrow_back</span>
+        <div class="cart-items">
+
+        </div>
+       <div class="cart-total">
+        <h3 class="total-amount">Total: ₹0</h3>
+        <h3 class="total-items">Items: 0</h3>
+        <button class="checkout-btn">Checkout</button>
+
+         </div>
+    </section>
+   
+<div id="paymentSuccess">
+  <div class="success-box">
+    <div class="checkmark">✔</div>
+    <h2>Payment Successful!</h2>
+    <p>Thank you for your purchase.</p>
+  </div>
+</div>
+
+  </main>
 
 
 

@@ -1,175 +1,268 @@
- let cartItemCount = 0;
+ let product_display=document.querySelector(".product-display");
+ let main=document.querySelector("main");
+ let input=document.querySelector("input");
+ let addToCart_container=document.querySelector(".addToCart-conatiner");
+ let cart_icon=document.querySelector(".cart-icon");
+ let cart_closeBtn=document.querySelector(".cart-close");
+ let item_count_icon=document.querySelector(".cart-count");
 
 
-function addtocart(data){
-    ++cartItemCount;
-    
-    document.querySelector(".item-count").innerHTML = cartItemCount;
-    addItemToCart(data)
-}
+let cart_items=[];
+//  todo cart count
+let cart_count=0;
 
-let cartItems = [];
-let div=document.createElement("div");
-function addItemToCart(data) {
-    // check if already in cart
-    let exists = cartItems.some(item => item.id === data.id);
-    
-    if (!exists) {
-        cartItems.push(data);
+//  todo indian currency
+ let INR_RUPEE=91;
+
+
+//  todo total items
+let total_items_value=0;
+// todo total price
+let total_price_value=0;
+
+
+//  todo dolor to rupee coverter
+ let rupeeConverter=(dolor)=>Math.floor(dolor*INR_RUPEE);
+
+//todo  ratings giver function
+ let ratings=(ratings)=> '⭐'.repeat(Math.floor(ratings));
+
+//  todo main function this function will get the data from api
+ async function load(){
+  let res=await fetch('https://dummyjson.com/products?limit=10');
+  let data=await res.json();
+  let product_data=data.products || [];
+  
+
+
+  //todo render the products based on input 
+  function render(list){
+   list.forEach(element => {
+     let cards=document.createElement("div");
+    cards.setAttribute("class","cards");
+    cards.innerHTML=`
+    <div class="product-image">
+    <img src=${element.thumbnail} alt=${element.title}>
+        </div>
+        <div class="product-details">
+            <h2>${element.title}</h2>
+            <div class=price-ratings> 
+            <p>₹${rupeeConverter(element.price)}</p> <b>${ratings(element.rating)}</b> 
+            </div>
+            <div class="card-buttons">
+            <button class="add-to-cart">Add to Cart</button>
+            <button class="view"> view</button>
+            </div>
+      </div>
+    `
+    const [addBtn, viewBtn] = cards.querySelectorAll('button');
+          addBtn.addEventListener('click', ()=> addToCart(element));
+          viewBtn.addEventListener('click', ()=> showProduct(element));
+    product_display.append(cards);
+   });
+  }
+
+  //todo input handler
+   input.addEventListener("keyup", (e) => {
+  let val = e.target.value.toLowerCase().trim();
+  let inputFilterd = product_data.filter(ele => ele.title.toLowerCase().includes(val));
+  product_display.innerHTML = "";
+  if (val.length > 0) {
+    if (inputFilterd.length > 0) {
+      render(inputFilterd);
+    } else {
+      product_display.innerHTML = "No products found";
     }
-
-    console.log("Cart:", cartItems);
-     div.innerHTML="";
-   let total_amount = Math.floor(cartItems.reduce((acc, ele) => acc + ele.price, 0))*91;
-     console.log("working");
-    cartItems.forEach(ele=>{
-       
-    div.setAttribute("class","slider-cart");
-    let childs=document.createElement("div");
-    childs.setAttribute("class","cart-item-container")
-    childs.innerHTML=`
-    <div>
-        <img src="${ele.thumbnail}" class="cart-img">
-    <p style="color:#fff">${ele.title }</p>
-    `
-    div.append(childs)
-    
-    })
-    let priceDetails=document.querySelector("div");
-    priceDetails.innerHTML=`
-    <p>₹${Math.floor(total_amount)}</p>
-    <button onclick="payDetails(${total_amount})" style="padding:10px; color:#fff;background-color:green;border:none;width:100%;">pay</button>
-    `
-    div.append(priceDetails)
-    document.body.append(div)
-}
-
-document.querySelector(".cart-view").addEventListener("click",(e)=>{
-    e.stopPropagation()
-    document.querySelector(".slider-cart").style.display="flex";
+  } else {
+    render(product_data);
+  }
 });
+  // }
 
-
-let payForm=document.createElement("div");
-payForm.setAttribute("class","formPay")
-function payDetails(amount){
-    payForm.innerHTML=`
-    <h2>Payment Form</h2>
-    <div class="amount-display">
-      Total Amount: ₹<span id="totalAmount">${amount}</span>
-    </div>
-
-    <form id="paymentForm">
-      <div class="form-group">
-        <label for="cardName">Card Holder Name</label>
-        <input type="text" id="cardName" placeholder="Enter name on card" required>
-      </div>
-
-      <div class="form-group">
-        <label for="cardNumber">Card Number</label>
-        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16" required>
-      </div>
-
-      <div class="form-group">
-        <label for="expiry">Expiry Date</label>
-        <input type="text" id="expiry" placeholder="MM/YY" required>
-      </div>
-
-      <div class="form-group">
-        <label for="cvv">CVV</label>
-        <input type="password" id="cvv" placeholder="***" maxlength="3" required>
-      </div>
-
-      <button type="submit" class="pay-btn">Pay Now</button>
-    </form>
-
-    `
-    document.body.append(payForm)
+ 
+  render(product_data);
 }
 
 
 
+// todo diaplaying prroduct details complaetly in new page
+function showProduct(item) {
+  let product_view_modal = document.createElement("section");
+  product_view_modal.setAttribute("class", "product-view-modal");
+  let modal_content = document.createElement("div");
+  modal_content.setAttribute("class", "modal-content");
+  modal_content.innerHTML = `
+    <span class="material-symbols-outlined close-button">arrow_back</span>
+    <div class="product-details">
+      <img src="${item.thumbnail}" alt="${item.title}" class="product-image">
+      <div class="product-info">
+        <h2 class="product-name">${item.title}</h2>
+        <p class="product-description">${item.description}</p>
+        <p class="product-price">₹${rupeeConverter(item.price)}</p>
 
-
-
-
-
-fetch("https://dummyjson.com/products?limit=20")
-.then(res=>res.json())
-.then(data=>{
-    
-    let productsData = data.products;
-    console.log(productsData);
-    let productscontainer = document.querySelector(".products-container");
-   productsData.forEach(element => {
-    let div = document.createElement("div");
-    div.setAttribute("class", "card");
-
-   div.innerHTML = `
-    <img src="${element.thumbnail}">
-    <div class="card-btns-title">
-        <p>${element.title}</p>
-        <div class="price-ratings">
-            <b>₹${Math.floor(element.price * 91)}</b>
-            <b id="rating">⭐${element.rating}</b>
+         <div class="reviews">
+          ${item.reviews.length ? item.reviews.map(r => `
+            <div class="review">
+              <header><span>${r.reviewerName || 'User'}</span> <span>${(r.date||'').toString().slice(0,10)}</span></header>
+              <div class="rating">${ratings(r.rating || 0)}</div>
+              <div>${r.comment || ''}</div>
+            </div>
+          `).join('') : '<em style="color:#b8c6cf">No reviews yet.</em>'}
         </div>
-        <button class="add-to-cart" onclick='addtocart(${JSON.stringify(element)})'>Add to cart</button>
-        <button onclick='display(${JSON.stringify(element)})'>View</button>
+        
+        <button class="add-to-cart" id="add-to-cart-singlepage">Add to Cart</button>
+      </div>
     </div>
-`;
+  `;
+  product_view_modal.append(modal_content);
+  main.append(product_view_modal);
 
-
-    productscontainer.append(div);
-});
-     
-});
-
-function display(data){
-   let popupData=data;
-    let popup=document.createElement("div");
-   popup.setAttribute("class","popup");
-
-   let popupchild=document.createElement("div");
-   popupchild.setAttribute("class","popupchild");
-
-//    popupdata
-
-popupchild.innerHTML = `
-  <img src="${data.thumbnail}" style="border:1px solid #fff;border-radius:20px;height:30%;margin-top:100px">
-  <p class="popup-title">${data.title} - ${data.category}</p>
-  <div class="popup-price">
-      <b>₹${Math.floor(data.price*91)}</b> <b>⭐${data.rating}</b>
-  </div>
-  <p style="border-top:2px solid gray">${data.description}</p>
-  <div class="reviews">
-      ${data.reviews.map(ele => `
-        <div class="review-item">
-          <span class="profile">
-            <b>${ele.reviewerName}</b> <i>${ele.date}</i> 
-            <span>
-              ${"⭐".repeat(Math.floor(ele.rating)) 
-              + (ele.rating % 1 >= 0.5 ? "✨" : "") 
-              + "☆".repeat(5 - Math.floor(ele.rating) - (ele.rating % 1 >= 0.5 ? 1 : 0))}
-            </span>
-          </span> 
-          ${ele.comment}
-        </div>
-      `).join("")}
-  </div>
-  <button class="add-to-cart" onclick='addtocart(${JSON.stringify(data)})'>add to cart</button>
-`;
-
-
-
-   let cnlbutton=document.createElement("button");
-   cnlbutton.innerText="X";
-   cnlbutton.setAttribute("class","cnlbtn")
-   popup.append(popupchild);
-   popup.append(cnlbutton)
-   document.body.append(popup)
-   document.querySelector(".cnlbtn").addEventListener("click",()=>{
-    document.body.removeChild(popup)
-    console.log("cliked");
-   })
+  // Attach event listener after adding to DOM
+  document.querySelector("#add-to-cart-singlepage").addEventListener("click",()=>addToCart(item))
+  product_view_modal.querySelector(".close-button").addEventListener("click", hideProduct);
 }
+
+
+// todo hide the complete product details 
+function hideProduct() {
+  const modal = document.querySelector(".product-view-modal");
+  if (modal) modal.remove();
+}
+
+
+
+// todo adding item to cart
+function addToCart(item) {
+  item_count_icon.innerHTML=++cart_count;
+  
+  // Push only if it's a single object
+  if (item && !Array.isArray(item)) {
+    cart_items.push({ ...item, productId: Date.now() });
+  }
+  item_count_icon.classList.add("float-anim");
+  
+
+
+  renderCart();
+  setTimeout(()=>{
+    item_count_icon.classList.remove("float-anim")
+  },200)
+}
+
+function renderCart() {
+// todo payment and checkout
+  let total_amount=document.querySelector(".total-amount");
+  let total_items=document.querySelector(".total-items");
+  total_items_value=cart_items.length;
+  total_amount_value=cart_items.reduce((acc,ele)=>{
+    return acc+rupeeConverter(ele.price)
+  },0)
+  total_items.innerHTML=`Total Amount: ${total_amount_value}`;
+  total_amount.innerHTML=`Total Items: ${total_items_value}`
+  
+  let cart = document.querySelector(".cart-items");
+  cart.innerHTML = ""; // clear old UI
+
+  let totalamount
+
+  cart_items.forEach(element => {
+    let carts_item = document.createElement("div");
+    carts_item.innerHTML = `
+      <div class="cart-item">
+        <div class="image-title">
+          <img src=${element.thumbnail} alt=${element.title}>
+          <p>${element.title}</p>
+        </div>
+        <div class="remove-btn">
+          <button class="remove_btn">Remove</button>
+        </div>
+      </div>
+    `;
+
+    cart.append(carts_item);
+
+    let [removebtn] = carts_item.querySelectorAll("button");
+    removebtn.addEventListener("click", () => deleteItem(element.productId));
+  });
+}
+
+function deleteItem(id) {
+  // update the global cart_items array
+  cart_items = cart_items.filter(ele => ele.productId !== id);
+
+  // re-render UI
+  renderCart();
+}
+
+
+
+cart_icon.addEventListener("click",(e)=>{
+  addToCart_container.style.display="block";
+})
+
+cart_closeBtn.addEventListener("click",()=>{
+    addToCart_container.style.display="none";
+})
+
+
+
+// todo checkout
+
+let checkout=document.querySelector(".checkout-btn");
+checkout.addEventListener("click",()=>{
+ if(cart_items.length>0){
+   payForm()
+ }
+ else{
+  alert("please add items to cart")
+ }
+})
+
+// todo pay form
+
+function payForm(){
+
+  let formContainer=document.createElement("div");
+  formContainer.setAttribute("class","formContainer")
+  formContainer.innerHTML=`
+  <form>
+  <input type="text" placeholder="enter a card holder name" required>
+
+  <input type="text" min="16" max="16" placeholder="enter a card number"  required >
+
+  <input type="text" placeholder="enter a expiry date"  required>
+
+<button class="pay">Pay</button>
+  </form>
+  `
+  main.append(formContainer)
+  document.querySelector(".pay").addEventListener("click",(e)=>{
+    e.preventDefault(e)
+    showPaymentSuccess()
+
+  })
+}
+
+function showPaymentSuccess() {
+  cart_items=[];
+  total_items_value=0;
+  total_price_value=0;
+  main.removeChild(document.querySelector(".formContainer"))
+  renderCart()
+  let successBox = document.getElementById("paymentSuccess");
+  successBox.style.display = "flex";
+
+  // Auto close after 2 sec
+  setTimeout(() => {
+    successBox.style.display = "none";
+  }, 2000);
+}
+
+
+
+// payForm()
+
+// todo loading to run or execuet load function
+
+load()
 
