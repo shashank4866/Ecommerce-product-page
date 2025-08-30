@@ -5,6 +5,25 @@
  let cart_icon=document.querySelector(".cart-icon");
  let cart_closeBtn=document.querySelector(".cart-close");
  let item_count_icon=document.querySelector(".cart-count");
+ let searchclose=document.querySelector(".search-close");
+ let category=document.querySelector("#category");
+ let resultslist=document.querySelector(".results-list")
+ let searcheditemval=document.querySelector(".searched-items");
+ let loader=document.querySelector(".loader");
+ let skip=0;
+ let limit=10;
+
+ let searchInput=document.querySelector("#searchInput-div");
+ searchclose.addEventListener("click",()=>{
+  document.querySelector(".searchPage").style.display="none"
+ })
+
+ 
+
+
+ searchInput.addEventListener("click",()=>{
+  document.querySelector(".searchPage").style.display="block"
+ })
 
 
 let cart_items=[];
@@ -29,10 +48,23 @@ let total_price_value=0;
 
 //  todo main function this function will get the data from api
  async function load(){
-  let res=await fetch('https://dummyjson.com/products?limit=10');
+  let res=await fetch(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`);
   let data=await res.json();
   let product_data=data.products || [];
   
+   // Step 1: Extract names only
+    const names = product_data.map(cat => cat.category);
+
+    // Step 2: Remove duplicates using Set
+    const uniqueNames = [...new Set(names)];
+
+    // Step 3: Add to dropdown
+    uniqueNames.forEach(name => {
+      const option = document.createElement("option");
+      option.value = name.toLowerCase().replace(/\s+/g, "-"); // safe value
+      option.textContent = name;
+      category.appendChild(option);
+    });
 
 
   //todo render the products based on input 
@@ -45,9 +77,9 @@ let total_price_value=0;
     <img src=${element.thumbnail} alt=${element.title}>
         </div>
         <div class="product-details">
-            <h2>${element.title}</h2>
+            <p>${element.title}</p>
             <div class=price-ratings> 
-            <p>₹${rupeeConverter(element.price)}</p> <b>${ratings(element.rating)}</b> 
+             <b>${ratings(element.rating)}</b> <p>₹${rupeeConverter(element.price)}</p>
             </div>
             <div class="card-buttons">
             <button class="add-to-cart">Add to Cart</button>
@@ -60,24 +92,49 @@ let total_price_value=0;
           viewBtn.addEventListener('click', ()=> showProduct(element));
     product_display.append(cards);
    });
+
+   
+
+
   }
+
+  //todo filter
+  category.addEventListener("click",()=>{
+    let val=category.value;
+      let filterdProduct=product_data.filter(item=>item.category==val)
+      product_display.innerHTML = "";
+      render(filterdProduct)
+      if(val=="All")render(product_data)
+  })
 
   //todo input handler
    input.addEventListener("keyup", (e) => {
   let val = e.target.value.toLowerCase().trim();
-  let inputFilterd = product_data.filter(ele => ele.title.toLowerCase().includes(val));
-  product_display.innerHTML = "";
+  let inputFilterd = product_data.filter(ele => ele.title.toLowerCase().includes(val)||ele.category.toLowerCase().includes(val));
+  searcheditemval.innerHTML="seach items";
   if (val.length > 0) {
     if (inputFilterd.length > 0) {
-      render(inputFilterd);
+      sercheditems(inputFilterd);
     } else {
-      product_display.innerHTML = "No products found";
+      searcheditemval.innerHTML = "No products found";
     }
-  } else {
-    render(product_data);
-  }
+  } 
 });
-  // }
+
+function sercheditems(items){
+  searcheditemval.innerHTML="";
+  items.forEach(ele=>{
+    let li=document.createElement("li");
+    li.setAttribute("class","list-item")
+    li.innerHTML=`
+    <img src=${ele.thumbnail} alt=${ele.title}/>
+    <p>${ele.title}</p>
+    `
+    searcheditemval.append(li)
+  })
+  console.log(items);
+}
+//   // }
 
  
   render(product_data);
@@ -86,24 +143,77 @@ let total_price_value=0;
 
 
 // todo diaplaying prroduct details complaetly in new page
+// function showProduct(item) {
+//   let product_view_modal = document.createElement("section");
+//   product_view_modal.setAttribute("class", "product-view-modal");
+//   let modal_content = document.createElement("div");
+//   modal_content.setAttribute("class", "modal-content");
+//   modal_content.innerHTML = `
+//     <span class="material-symbols-outlined close-button">arrow_back</span>
+//     <div class="product-details">
+//       <img src="${item.thumbnail}" alt="${item.title}" class="product-image">
+      
+//       <div class="product-info">
+//         <h2 class="product-name">${item.title}</h2>
+//          <p class="product-price">₹${rupeeConverter(item.price)}</p>
+//         <p class="product-description">${item.description}</p>
+       
+
+//          <div class="reviews">
+//           ${item.reviews.length ? item.reviews.map(r => `
+//             <div class="review">
+//               <header><span>${r.reviewerName || 'User'}</span> <span>${(r.date||'').toString().slice(0,10)}</span></header>
+//               <div class="rating">${ratings(r.rating || 0)}</div>
+//               <div>${r.comment || ''}</div>
+//             </div>
+//           `).join('') : '<em style="color:#b8c6cf">No reviews yet.</em>'}
+//         </div>
+        
+//         <button class="add-to-cart" id="add-to-cart-singlepage">Add to Cart</button>
+//       </div>
+//     </div>
+//   `;
+//   product_view_modal.append(modal_content);
+//   main.append(product_view_modal);
+
+//   // Attach event listener after adding to DOM
+//   document.querySelector("#add-to-cart-singlepage").addEventListener("click",()=>addToCart(item))
+//   product_view_modal.querySelector(".close-button").addEventListener("click", hideProduct);
+// }
+
+
+// todo diaplaying prroduct details complaetly in new page
 function showProduct(item) {
+  console.log(item);
   let product_view_modal = document.createElement("section");
   product_view_modal.setAttribute("class", "product-view-modal");
+
   let modal_content = document.createElement("div");
   modal_content.setAttribute("class", "modal-content");
+
   modal_content.innerHTML = `
     <span class="material-symbols-outlined close-button">arrow_back</span>
     <div class="product-details">
-      <img src="${item.thumbnail}" alt="${item.title}" class="product-image">
+      <!-- Main Product Image -->
+      <img src="${item.thumbnail}" alt="${item.title}" class="product-image" id="mainImage">
+
       <div class="product-info">
         <h2 class="product-name">${item.title}</h2>
-        <p class="product-description">${item.description}</p>
         <p class="product-price">₹${rupeeConverter(item.price)}</p>
+        <p class="product-description">${item.description}</p>
 
-         <div class="reviews">
+        <!-- Thumbnails -->
+        <div class="thumbnails">
+          ${item.images.map(img => `
+            <img src="${img}" class="thumbnail" alt="${item.title}">
+          `).join('')}
+        </div>
+
+        <div class="reviews">
           ${item.reviews.length ? item.reviews.map(r => `
             <div class="review">
-              <header><span>${r.reviewerName || 'User'}</span> <span>${(r.date||'').toString().slice(0,10)}</span></header>
+              <header><span>${r.reviewerName || 'User'}</span> 
+              <span>${(r.date||'').toString().slice(0,10)}</span></header>
               <div class="rating">${ratings(r.rating || 0)}</div>
               <div>${r.comment || ''}</div>
             </div>
@@ -114,12 +224,28 @@ function showProduct(item) {
       </div>
     </div>
   `;
+
   product_view_modal.append(modal_content);
   main.append(product_view_modal);
 
-  // Attach event listener after adding to DOM
-  document.querySelector("#add-to-cart-singlepage").addEventListener("click",()=>addToCart(item))
-  product_view_modal.querySelector(".close-button").addEventListener("click", hideProduct);
+  // Attach events
+  document.querySelector("#add-to-cart-singlepage")
+          .addEventListener("click",()=>addToCart(item));
+  product_view_modal.querySelector(".close-button")
+          .addEventListener("click", hideProduct);
+
+  // Thumbnail click handler -> change main image
+  const mainImage = product_view_modal.querySelector("#mainImage");
+  const thumbnails = product_view_modal.querySelectorAll(".thumbnail");
+  
+  thumbnails.forEach(thumb => {
+    thumb.addEventListener("click", () => {
+      mainImage.src = thumb.src;
+      // Optional: highlight active thumbnail
+      thumbnails.forEach(t => t.classList.remove("active-thumb"));
+      thumb.classList.add("active-thumb");
+    });
+  });
 }
 
 
@@ -162,8 +288,6 @@ function renderCart() {
   
   let cart = document.querySelector(".cart-items");
   cart.innerHTML = ""; // clear old UI
-
-  let totalamount
 
   cart_items.forEach(element => {
     let carts_item = document.createElement("div");
@@ -247,6 +371,7 @@ function showPaymentSuccess() {
   cart_items=[];
   total_items_value=0;
   total_price_value=0;
+  cart_count=0;
   main.removeChild(document.querySelector(".formContainer"))
   renderCart()
   let successBox = document.getElementById("paymentSuccess");
@@ -260,7 +385,22 @@ function showPaymentSuccess() {
 
 
 
+// todo scroll
+ window.addEventListener("scroll", () => {
+  loader.style.display="block"
+
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        setTimeout(()=>{
+          skip += limit; // move to next batch
+        load()
+        loader.style.display="none"
+        },1000)
+      }
+    });
+
+
 // payForm()
+
 
 // todo loading to run or execuet load function
 
