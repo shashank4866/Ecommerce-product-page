@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="./style.css">
+    <title>Modern Shop</title>
+</head>
+<body>
+  <header>
+    <nav>
+        <div class="logo">
+          <img src="https://png.pngtree.com/png-vector/20220601/ourmid/pngtree-shop-logo-design-with-a-handshake-in-bag-png-image_4749125.png" alt="Shop Logo" width="50px" height="50px">
+        </div>
+        <div class="search-container">
+            <div id="searchInput-div">Search for products...</div>
+            <select name="category" id="category">
+              <option value="All">All</option>
+            </select>
+        </div>
+        <div class="nav-icons">
+            <p class="cart-count">0</p>
+            <span class="material-symbols-outlined cart-icon">shopping_cart_checkout</span>
+        </div>
+        <div class="delivery">
+            <span class="material-symbols-outlined delivery-icon">delivery_truck_bolt</span>
+        </div>
+    </nav>
+  </header>
+
+  <div class="searchPage">
+    <h2>Search Results
+       <span class="material-symbols-outlined search-close">arrow_back</span>
+    </h2>
+    <div class="searchResults">
+       <div class="search-bar">
+            <div class="input-container">
+              <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." id="searchInput">
+            </div>
+        </div>
+      </div>
+      <div class="results-list">
+       <ul class="searched-items">
+        <li>No products found. Start typing to search.</li>
+       </ul>
+      </div>
+  </div>
+
+  <main>
+    <section class="product-display">
+    </section>
+
+    <section class="addToCart-conatiner">
+        <h2>Cart Items
+            <span class="material-symbols-outlined cart-close">arrow_back</span>
+        </h2>
+        <div class="cart-items">
+        </div>
+       <div class="cart-total">
+        <h3 class="total-amount">Total: ₹0</h3>
+        <h3 class="total-items">Items: 0</h3>
+        <h3 class="total-quantity">Quantity : 0</h3>
+        <button class="checkout-btn">Checkout</button>
+       </div>
+    </section>
+
+    <section class="delivery-info">
+       <!-- <h2>Cart Items -->
+            <span class="material-symbols-outlined delivery-info-close">arrow_back</span>
+        <!-- </h2> -->
+         <div class="delivery-item-container">
+
+         </div>
+    </section>
+   
+    <div id="paymentSuccess">
+      <div class="success-box">
+        <div class="checkmark">✔</div>
+        <h2>Payment Successful!</h2>
+        <p>Thank you for your purchase.</p>
+      </div>
+    </div>
+  </main>
+  
+  <div class="loader"></div>
+
+  <footer>
+    <p>Contact: <a href="mailto:shashank@gmailcom">shashank@gmailcom</a> | <a href="tel:+1234567890">+1234567890</a></p>
+    <p>&copy; 2024 Modern Shop. All rights reserved.</p>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
