@@ -44,8 +44,8 @@
         return acc+ele.itemQuantity;
     },0);
     let INR_RUPEE = 91;
-    let total_items_value = 0;
-    let total_price_value = 0;
+    // let total_items_value = 0;
+    // let total_price_value = 0;
     let total_amount_value=0;
 
     // Event Listeners
@@ -79,7 +79,7 @@
 
     // Main function to load products
     async function load() {
-        let res = await fetch(`https://dummyjson.com/products?limit=100&skip=${skip}`);
+        let res = await fetch(`https://dummyjson.com/products?limit=5&skip=${skip}`);
         let data = await res.json();
         let product_data = data.products || [];
         
@@ -101,7 +101,7 @@
                 cards.setAttribute("class", "cards");
                 cards.innerHTML = `
                     <div class="product-image">
-                        <img src=${element.thumbnail} alt=${element.title}>
+                        <img src=${element.thumbnail} alt=${element.title} loading="lazy">
                     </div>
                     <div class="product-details">
                         <p>${element.title}</p>
@@ -138,7 +138,11 @@
         });
 
         // Search functionality
+        let debounceTimer;
         input.addEventListener("keyup", (e) => {
+            clearTimeout(debounceTimer);
+
+            debounceTimer=setTimeout(()=>{
             let val = e.target.value.toLowerCase().trim();
             let inputFilterd = product_data.filter(ele => 
                 ele.title.toLowerCase().includes(val) || ele.category.toLowerCase().includes(val));
@@ -152,6 +156,7 @@
             } else {
                 searcheditemval.innerHTML = "<li class='info-text'>Start typing to search</li>";
             }
+            },400) //todo delay 300ms
         });
 
         function sercheditems(items) {
@@ -160,7 +165,7 @@
                 let li = document.createElement("li");
                 li.setAttribute("class", "list-item")
                 li.innerHTML = `
-                    <img src=${ele.thumbnail} alt=${ele.title}/>
+                    <img src=${ele.thumbnail} alt=${ele.title} loading="lazy"/>
                     <p>${ele.title}</p>
                 `;
                 li.addEventListener("click", () => {
@@ -211,7 +216,7 @@
                                 <div class="rating">${ratings(r.rating || 0)}</div>
                                 <div>${r.comment || ''}</div>
                             </div>
-                        `).join('') : '<em style="color:#b8c6cf">No reviews yet.</em>'}
+                        `).join('') : '<p style="color:#b8c6cf">No reviews yet.</p>'}
                     </div>
                     
                     <button class="add-to-cart" id="add-to-cart-singlepage">Add to Cart</button>
@@ -219,8 +224,11 @@
             </div>
         `;
 
+        
         product_view_modal.append(modal_content);
         main.append(product_view_modal);
+
+       
 
         // Event listeners for product view
         document.querySelector("#add-to-cart-singlepage")
@@ -303,8 +311,8 @@
         carts_item.classList.add("cart-item");
         carts_item.innerHTML = `
             <div class="image-title">
-                <img src=${element.thumbnail} alt=${element.title}>
-                <p>${element.title}</p>
+                <img src=${element.thumbnail} alt=${element.title} loading="lazy">
+                <p class="cart-item-title">${element.title}</p>
             </div>
             <div class="quantity">
                 <span class="decrement">-</span> 
@@ -320,6 +328,11 @@
         const decrement = carts_item.querySelector(".decrement");
         const value = carts_item.querySelector(".value");
         const increment = carts_item.querySelector(".increment");
+
+        let [cart_item]=carts_item.querySelectorAll(".image-title")
+        cart_item.addEventListener("click",()=>{
+            showProduct(element)
+        })
 
         decrement.addEventListener("click", () => {
             if (element.itemQuantity > 1) {
@@ -389,6 +402,7 @@
         
         document.querySelector(".pay").addEventListener("click", (e) => {
             e.preventDefault();
+   
             showPaymentSuccess();
         });
     }
@@ -404,7 +418,7 @@
         if (document.querySelector(".formContainer")) {
             main.removeChild(document.querySelector(".formContainer"));
         }
-        
+        localStorage.setItem("cart-item",JSON.stringify(cart_items))
         renderCart();
         
         let successBox = document.getElementById("paymentSuccess");
